@@ -5,12 +5,19 @@
 #include <thread>
 #include <utility>
 
-Disruptor::Disruptor(size_t bufferSize, std::unique_ptr<WaitStrategy> waitStrategy)
-    : buffer_(std::make_shared<RingBuffer>(bufferSize)), sequencer_(std::make_shared<Sequencer>()),
-      producer_(buffer_, sequencer_), processor_(buffer_, sequencer_), waitStrategy_(std::move(waitStrategy)) {
-    if (!waitStrategy_) {
+std::unique_ptr<WaitStrategy> Disruptor::requireWaitStrategy(
+    std::unique_ptr<WaitStrategy> strategy) {
+    if (!strategy) {
         throw std::invalid_argument("Disruptor requires a wait strategy");
     }
+    return strategy;
+}
+
+Disruptor::Disruptor(size_t bufferSize, std::unique_ptr<WaitStrategy> waitStrategy)
+    : waitStrategy_(requireWaitStrategy(std::move(waitStrategy))), buffer_(std::make_shared<RingBuffer>(bufferSize)),
+      sequencer_(std::make_shared<Sequencer>()), barrier_(std::make_shared<Barrier>(sequencer_, *waitStrategy_)),
+      producer_(buffer_, sequencer_), processor_(buffer_, sequencer_, barrier_) {
+
 }
 
 Disruptor::~Disruptor() {

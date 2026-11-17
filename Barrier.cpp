@@ -4,11 +4,11 @@
 #include <thread>
 #include <utility>
 
-Barrier::Barrier(std::shared_ptr<Sequencer> sequencer) : sequencer_(std::move(sequencer)) {
+Barrier::Barrier(std::shared_ptr<Sequencer> sequencer, WaitStrategy& waitStrategy) : sequencer_(std::move(sequencer)), waitStrategy_(waitStrategy) {
 }
 
 void Barrier::waitFor(const long sequence) const {
     while (sequence > sequencer_->cursor()) {
-        std::this_thread::yield();
+        waitStrategy_.wait();
     }
 }
