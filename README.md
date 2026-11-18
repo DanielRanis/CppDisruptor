@@ -1,6 +1,8 @@
 # CppDisruptor
 
-C++ Implementation of the LMAX Disruptor Pattern
+### C++ Implementation of the LMAX Disruptor Pattern:
+
+A simplified C++ implementation of the [LMAX Disruptor](https://lmax-exchange.github.io/disruptor/), demonstrating event publication through a ring buffer and sequence-based coordination between a producer and consumer. This project is for learning and demonstration; it does not implement every feature or concurrency guarantee of the original Disruptor.
 
 ## Build
 
