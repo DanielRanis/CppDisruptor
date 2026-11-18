@@ -11,4 +11,3 @@ long BusySpinWaitStrategy::waitFor(long sequence, Sequencer &cursor, Sequencer &
 
     return availableSequence;
 }
-

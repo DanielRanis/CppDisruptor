@@ -17,7 +17,6 @@ Disruptor::Disruptor(size_t bufferSize, std::unique_ptr<WaitStrategy> waitStrate
     : waitStrategy_(requireWaitStrategy(std::move(waitStrategy))), buffer_(std::make_shared<RingBuffer>(bufferSize)),
       sequencer_(std::make_shared<Sequencer>()), barrier_(std::make_shared<Barrier>(sequencer_, *waitStrategy_)),
       producer_(buffer_, sequencer_), processor_(buffer_, sequencer_, barrier_) {
-
 }
 
 Disruptor::~Disruptor() {
@@ -33,6 +32,7 @@ void Disruptor::onData(const std::string &data) const {
 }
 
 void Disruptor::stop() {
+    barrier_->stop();
     processor_.stop();
     if (processorThread_.joinable()) {
         processorThread_.join();

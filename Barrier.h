@@ -4,18 +4,22 @@
 #define BARRIER_H
 
 #include <memory>
+#include <atomic>
 #include "Sequencer.h"
 #include "WaitStrategy.h"
 
 class Barrier {
 public:
-    Barrier(std::shared_ptr<Sequencer> sequencer, WaitStrategy& waitStrategy);
+    Barrier(std::shared_ptr<Sequencer> sequencer, WaitStrategy &waitStrategy);
 
-    void waitFor(long sequence) const;
+    [[nodiscard]] bool waitFor(long sequence) const;
+
+    void stop();
 
 private:
+    std::atomic<bool> running_;
     std::shared_ptr<Sequencer> sequencer_;
-    WaitStrategy& waitStrategy_;
+    WaitStrategy &waitStrategy_;
 };
 
 #endif // BARRIER_H

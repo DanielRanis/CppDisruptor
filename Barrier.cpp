@@ -4,11 +4,18 @@
 #include <thread>
 #include <utility>
 
-Barrier::Barrier(std::shared_ptr<Sequencer> sequencer, WaitStrategy& waitStrategy) : sequencer_(std::move(sequencer)), waitStrategy_(waitStrategy) {
+Barrier::Barrier(std::shared_ptr<Sequencer> sequencer, WaitStrategy &waitStrategy) : running_(true),
+    sequencer_(std::move(sequencer)),
+    waitStrategy_(waitStrategy) {
 }
 
-void Barrier::waitFor(const long sequence) const {
-    while (sequence > sequencer_->cursor()) {
+bool Barrier::waitFor(const long sequence) const {
+    while (running_.load() && sequence > sequencer_->cursor()) {
         waitStrategy_.wait();
     }
+    return running_.load();
+}
+
+void Barrier::stop() {
+    running_.store(false);
 }

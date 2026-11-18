@@ -6,4 +6,3 @@
 void YieldWaitStrategy::wait() {
     std::this_thread::yield();
 }
-

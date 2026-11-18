@@ -10,7 +10,8 @@
 
 class EventProcessor {
 public:
-    EventProcessor(std::shared_ptr<RingBuffer> ringBuffer, std::shared_ptr<Sequencer> sequencer, std::shared_ptr<Barrier> barrier);
+    EventProcessor(std::shared_ptr<RingBuffer> ringBuffer, std::shared_ptr<Sequencer> sequencer,
+                   std::shared_ptr<Barrier> barrier);
 
     void run();
 
